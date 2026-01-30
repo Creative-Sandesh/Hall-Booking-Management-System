@@ -1,0 +1,4 @@
+U001|ali|123|Ali Khan|ali@gmail.com|012-111222|CUSTOMER
+U002|boss|admin1|Super Boss|admin@sys.com|ADMIN
+U003|sarah|work123|Sarah Staff|sarah@sys.com|SCHEDULER
+U004|mike|boss123|Mike Manager|mike@sys.com|MANAGER
