@@ -1,17 +1,21 @@
 package services;
 
 import enums.FileName;
-import models.User;
-import models.Customer;
-import models.Administrator;
 import models.*;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class FileHandler {
+
+    //Helper to ensure we always use the correct file path
+    private static String getFilePath() {
+        return FileName.USERS.getFilename();
+    }
 
     public static List<User> loadUsers() {
         List<User> userList = new ArrayList<>();
@@ -25,7 +29,7 @@ public class FileHandler {
             } catch (IOException e) {
                 System.out.println("Could not create file: " + e.getMessage());
             }
-            return userList; // Return empty list immediately
+            return userList; // Return empty list immediately, so app doesn't crash
         }
 
         try (Scanner scanner = new Scanner(file)) {
@@ -33,15 +37,15 @@ public class FileHandler {
                 String line = scanner.nextLine();
                 if (line.trim().isEmpty()) continue;
 
-                String[] parts = line.split("\\|");
+                String[] parts = line.split(",");
 
                 // Basic validation : We need at least 6 parts (ID, User, Pass, Name, Email, Role)
                 if (parts.length < 6) continue;
 
                 // 1. Extract Common Data (Indices 0 to 4)
-                String id = parts[0];
-                String username = parts[1];
-                String password = parts[2];
+                String id = parts[0].trim();
+                String username = parts[1].trim();
+                String password = parts[2].trim();
                 String name = parts[3];
                 String email = parts[4];
 
@@ -69,8 +73,22 @@ public class FileHandler {
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Error reading file.");
+            System.out.println("Error reading file."+ e.getMessage());
         }
         return userList;
     }
-}
+
+    public static boolean addUser(User user) {
+
+        try (FileWriter fw = new FileWriter(getFilePath(), true)) {
+        // Write the user data followed by a New Line character
+        fw.write(user.toFileString() + "\n");
+
+        return true;
+        } catch (IOException e) {
+            System.out.println("Error saving user: " + e.getMessage());
+            return false;
+        }
+    }
+    }
+
