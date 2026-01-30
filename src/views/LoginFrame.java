@@ -100,11 +100,11 @@ public class LoginFrame extends JFrame {
                     new CustomerDashboard((models.Customer) u);
                 } else if (u.getRole().equalsIgnoreCase("ADMIN")) {
                     new AdminDashboard((models.Administrator) u);
-                }// else if (u.getRole().equalsIgnoreCase("SCHEDULER")) {
-//                    new SchedulerDashboard((models.Scheduler) u);
-//                } else if (u.getRole().equalsIgnoreCase("MANAGER")) {
-//                    new ManagerDashboard((models.Manager) u);
-//                }
+                } else if (u.getRole().equalsIgnoreCase("SCHEDULER")) {
+                    new SchedulerDashboard((models.Scheduler) u);
+                } else if (u.getRole().equalsIgnoreCase("MANAGER")) {
+                    new ManagerDashboard((models.Manager) u);
+                }
                 this.dispose();
                 return;
             }
