@@ -69,6 +69,17 @@ public class BaseDashboard extends JFrame {
         btn.setHorizontalAlignment(SwingConstants.LEFT);
         btn.addActionListener(action);
 
+        // --- HOVER EFFECT (NEW) ---
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn.setBackground(new Color(75, 85, 99)); // Slightly lighter gray
+                btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn.setBackground(COLOR_SIDEBAR); // Back to normal
+            }
+        });
+
         // Add specific spacing
         sidebarPanel.add(btn);
         sidebarPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Space between buttons

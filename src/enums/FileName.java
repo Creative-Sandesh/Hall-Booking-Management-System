@@ -6,8 +6,8 @@ public enum FileName {
 
     USERS("D:\\University_Assignments\\3n Sem\\Oop With Java\\Hall Booking Management System\\Hall Booking Management System\\data\\users.txt"),
     HALLS("D:\\University_Assignments\\3n Sem\\Oop With Java\\Hall Booking Management System\\Hall Booking Management System\\data\\halls.txt"),
-    BOOKINGS("D:\\University_Assignments\\3n Sem\\Oop With Java\\Hall Booking Management System\\Hall Booking Management System\\data\\bookings.txt");
-
+    BOOKINGS("D:\\University_Assignments\\3n Sem\\Oop With Java\\Hall Booking Management System\\Hall Booking Management System\\data\\bookings.txt"),
+    ISSUES("D:\\University_Assignments\\3n Sem\\Oop With Java\\Hall Booking Management System\\Hall Booking Management System\\data\\issues.txt");
     private final String filename;
 
     // constructor

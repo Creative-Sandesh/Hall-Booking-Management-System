@@ -20,6 +20,9 @@ public class Customer extends User{
         return "CUSTOMER";
     }
 
+    public void setName(String name) { this.name = name; }
+    public void setEmail(String email) { this.email = email; }
+
     @Override
     public String toFileString() {
         return getId() + "," +

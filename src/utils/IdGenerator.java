@@ -7,11 +7,27 @@ import java.util.Scanner;
 
 public class IdGenerator {
 
-    // Call this method like: IdGenerator.generateNextId("CUSTOMER");
-    public static String generateNextId(String role) {
-        String prefix = getPrefix(role);
-        int maxId = 0;
+    // Helper to extract the numeric part of an ID (e.g., "C005" -> 5)
+    private static int extractIdNumber(String idString) {
+        // Remove the first character (the letter)
+        String numberPart = idString.substring(1);
+        try {
+            return Integer.parseInt(numberPart);
+        } catch (NumberFormatException e) {
+            return 0; // If ID is weird, treat it as 0
+        }
+    }
 
+    public static String generateNextId(String role) {
+        String prefix = "U"; // Default
+        if (role.equalsIgnoreCase("CUSTOMER")) prefix = "C";
+        else if (role.equalsIgnoreCase("ADMIN")) prefix = "A";
+        else if (role.equalsIgnoreCase("SCHEDULER")) prefix = "S";
+        else if (role.equalsIgnoreCase("MANAGER")) prefix = "M";
+        else if (role.equalsIgnoreCase("ISSUE")) prefix = "I";   // <--- ADD THIS
+        else if (role.equalsIgnoreCase("BOOKING")) prefix = "B";
+
+        int maxId = 0;
         File file = new File(FileName.USERS.getFilename());
 
         if (file.exists()) {
@@ -23,33 +39,20 @@ public class IdGenerator {
                     String[] parts = line.split(",");
                     String currentId = parts[0].trim();
 
-                    // Check if this ID starts with our prefix (e.g., "C")
+                    // If we found an ID starting with our letter (e.g., "C")
                     if (currentId.startsWith(prefix)) {
-                        try {
-                            // Extract number (e.g., "C005" -> 5)
-                            int numericPart = Integer.parseInt(currentId.substring(1));
-                            if (numericPart > maxId) {
-                                maxId = numericPart;
-                            }
-                        } catch (NumberFormatException e) {
-                            // Ignore IDs that don't match the format (like old UUIDs)
+                        int currentNum = extractIdNumber(currentId);
+                        if (currentNum > maxId) {
+                            maxId = currentNum;
                         }
                     }
                 }
             } catch (FileNotFoundException e) {
-                System.out.println("Error reading file for ID generation.");
+                System.out.println("Error reading file for IDs");
             }
         }
 
-        // Generate next ID (e.g., Prefix + 001)
+        // Return next ID (e.g., Prefix + (max + 1) padded with zeros)
         return String.format("%s%03d", prefix, maxId + 1);
-    }
-
-    private static String getPrefix(String role) {
-        if (role.equalsIgnoreCase("CUSTOMER")) return "C";
-        if (role.equalsIgnoreCase("ADMIN")) return "A";
-        if (role.equalsIgnoreCase("MANAGER")) return "M";
-        if (role.equalsIgnoreCase("SCHEDULER")) return "S";
-        return "U"; // Default for Unknown
     }
 }
