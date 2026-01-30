@@ -1,6 +1,6 @@
 package views;
 
-import models.Customer;
+import models.*;
 import models.User;
 import services.FileHandler;
 
@@ -9,6 +9,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class LoginFrame extends JFrame {
 
@@ -63,8 +65,14 @@ public class LoginFrame extends JFrame {
         styleButton(loginButton); // Apply custom style
         mainPanel.add(loginButton);
 
-        // Add main panel to frame
-        add(mainPanel);
+        // 5. REGISTER BUTTON ---
+        JButton registerButton = new JButton("Don't have an account? Sign Up");
+        registerButton.setBorderPainted(false);
+        registerButton.setContentAreaFilled(false); // Make it look like a link
+        registerButton.setForeground(PRIMARY_COLOR);
+        registerButton.setFont(new Font("Arial", Font.BOLD, 12));
+        registerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        mainPanel.add(registerButton);
 
         // Login Logic
         loginButton.addActionListener(new ActionListener() {
@@ -74,6 +82,16 @@ public class LoginFrame extends JFrame {
             }
         });
 
+        // register logic
+        registerButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                dispose(); // Close Login Window
+                new RegisterFrame(); // Open Registration Window
+            }
+        });
+
+        add(mainPanel);
         setVisible(true);
     }
 
@@ -86,30 +104,28 @@ public class LoginFrame extends JFrame {
         btn.setOpaque(true);
     }
 
+    // REPLACE the old loop inside performLogin() with this:
+
     private void performLogin() {
         String inputUser = usernameField.getText();
         String inputPass = new String(passwordField.getPassword());
 
-        List<User> users = FileHandler.loadUsers();
-        boolean found = false;
+        // Call the Service to handle logic
+        User user = services.AuthService.login(inputUser, inputPass);
 
-        for (User u : users) {
-            if (u.getUsername().equals(inputUser) && u.getPassword().equals(inputPass)) {
-                found = true;
-                if (u.getRole().equalsIgnoreCase("CUSTOMER")) {
-                    new CustomerDashboard((models.Customer) u);
-                } else if (u.getRole().equalsIgnoreCase("ADMIN")) {
-                    new AdminDashboard((models.Administrator) u);
-                } else if (u.getRole().equalsIgnoreCase("SCHEDULER")) {
-                    new SchedulerDashboard((models.Scheduler) u);
-                } else if (u.getRole().equalsIgnoreCase("MANAGER")) {
-                    new ManagerDashboard((models.Manager) u);
-                }
-                this.dispose();
-                return;
+        if (user != null) {
+            // Success! Route to correct dashboard
+            if (user.getRole().equalsIgnoreCase("CUSTOMER")) {
+                new CustomerDashboard((models.Customer) user);
+            } else if (user.getRole().equalsIgnoreCase("ADMIN")) {
+                new AdminDashboard((models.Administrator) user);
+            } else if (user.getRole().equalsIgnoreCase("SCHEDULER")) {
+                new SchedulerDashboard((models.Scheduler) user);
+            } else if (user.getRole().equalsIgnoreCase("MANAGER")) {
+                new ManagerDashboard((models.Manager) user);
             }
-        }
-        if (!found) {
+            this.dispose();
+        } else {
             JOptionPane.showMessageDialog(this, "Invalid Username or Password!", "Login Error", JOptionPane.ERROR_MESSAGE);
         }
     }
